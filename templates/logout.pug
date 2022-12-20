@@ -1,0 +1,13 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Logout
+    link(rel='stylesheet', type='text/css', href='/css/myNewStyle.css')
+    include theNav.pug
+  body
+    header
+      h1= h1 
+    #LoginWindow
+      form(name='myForm', action='/login', method='POST')
+        button(type='submit', value='Logout') Logout

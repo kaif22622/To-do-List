@@ -1,0 +1,10 @@
+doctype html
+html(lang='en')
+  head
+    link(rel='stylesheet', type='text/css', href='/css/myNewStyle.css')
+  body
+    nav.navigation
+      if username
+        a(href='login') #{username}
+      else 
+        a(href='login') Login

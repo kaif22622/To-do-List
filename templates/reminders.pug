@@ -1,0 +1,112 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title To-do List
+    link(rel='stylesheet', type='text/css', href='resources/css/myNewStyle.css')
+    script(src='https://code.jquery.com/jquery-1.10.2.js')
+    script(src='https://kit.fontawesome.com/5fa28ec6b1.js', crossorigin='anonymous')
+    include theNav.pug 
+  body
+    header
+      h1 Reminders
+      hr
+    form(action='/reminders', method='GET')
+      legend#filter
+        input(type='radio', name='done', value='all')
+        label(for='all') All
+
+        input(type='radio', name='done', value='1')
+        label(for='done') Completed
+
+        input(type='radio', name='done', value='0')
+        label(for='undone') Incompleted
+        br
+        input(type='radio', name='priority', value='2')
+        label(for='low') Low priority
+
+        input(type='radio', name='priority', value='3')
+        label(for='middle') Middle priority
+
+        input(type='radio', name='priority', value='4')
+        label(for='high') High priority
+        br
+        button(type='submit', value='filter') Filter
+      hr#top
+      
+    form#buttons(action='/reminders', method='post') 
+      if empty || error
+        #blank No information
+      else 
+        ul.list-group
+          for i in rows
+            div.message
+              label(id=`label-${i.id}`) #{i.message}
+            if i.priority == 2
+              label(id='priority', style='background-color: green') Low
+            else if i.priority == 3
+              label(id='priority', style='background-color: rgb(255, 204, 60)') Middle
+            else if i.priority == 4
+              label(id='priority', style='background-color: red') High
+            div.itemButton
+              button(type='button', onclick=`markItem(${i.id})`) Mark
+              button(type='button', onclick=`unmark(${i.id})`) Unmark
+              button(type='button', onclick=`deleteList(${i.id})`) Delete
+            hr
+            br
+      hr#buttom 
+      button(type='button', onclick='openForm()') Add
+      br
+      br
+      #popUp
+        br
+        label(for='priority')
+          | Priority:
+        select(name='priority')
+          option(value='2') Low priority
+          option(value='3') Middle priority
+          option(value='4') High priority
+        br
+        br
+        label(for='message')
+          | Message:
+        input#message(type='text', name='message')
+        br
+        br
+        button(type='submit', value='Submit', name='submit') Add
+        button(type='button', onclick='closeForm()') Close
+    
+    script.
+      function openForm() {
+      document.getElementById("popUp").style.display = "block";
+      }
+      function closeForm() {
+      document.getElementById("popUp").style.display = "none";
+      }
+
+      function markItem(id) {
+        fetch('/api/mark/'+id +'/1', {method: 'POST'})
+        .then(response => {
+          {console.log(id), console.log(done)};
+        }).then(data => {
+          var label = document.getElementById(`label-${id}`);
+        })
+      }
+
+      function deleteList(id) {
+        fetch('/api/list/' + id, {method: 'POST'})
+        .then(response => {
+          console.log(id);
+        }).then(data=>{
+          window.location.reload();
+        })
+      }
+
+      function unmark(id) {
+        fetch('api/mark/' + id +'/0', {method: 'POST'})
+        .then(response => {
+          console.log(id);
+        }).then(data => {
+          console.log(data);
+        })
+      }
